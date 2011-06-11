@@ -185,7 +185,7 @@ int main (int argc, char *argv[])
     ponyArray[i].animation = Idle;
     ponyArray[i].active = 1;
     //Create animation from file
-    ponyArray[i].pictureanim = gdk_pixbuf_animation_new_from_file("/home/rabbit/ponies/Applejack/trotcycle_AJ_left.gif", &error);
+    ponyArray[i].pictureanim = gdk_pixbuf_animation_new_from_file("../trotcycle_AJ_left.gif", &error);
     ponyArray[i].image = gtk_image_new_from_animation(ponyArray[i].pictureanim);
     ponyArray[i].pictureanimit = gdk_pixbuf_animation_get_iter(ponyArray[i].pictureanim, NULL);
     ponyArray[i].win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
