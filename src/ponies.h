@@ -17,6 +17,8 @@ typedef struct s_pony
   int direction;
   int speed;
   unsigned char active;
+  int dragActive;
+  int releaseEventID;
   int clickEventID;
   int enterEventID;
   int leaveEventID;

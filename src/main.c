@@ -15,7 +15,8 @@
 //Right click = open menu, left click = drag
 void click_event(GtkWidget *widget, GdkEventButton *event, pony *data)
 {
-  if(data->active == 0)
+  g_print("event type = %d\n", event->type); 
+  if(data->active == 0 || event->type == GDK_BUTTON_RELEASE_MASK && event->button != 1)
     return;
   if(event->button == 3)
   {
@@ -24,7 +25,12 @@ void click_event(GtkWidget *widget, GdkEventButton *event, pony *data)
   }
   else if(event->button == 1)
   {
+      if(event->type == GDK_BUTTON_RELEASE_MASK)
+      {
+        data->dragActive = 0;
+      }
       g_print("Drag&Drop event on %s\n", getPonyName(data->name));
+      data->dragActive = 1;
       gtk_window_begin_move_drag(GTK_WINDOW(gtk_widget_get_toplevel(data->win)),
                                  event->button,event->x_root,
                                  event->y_root,event->time);
@@ -46,7 +52,6 @@ void enter_event(GtkWidget *widget, GdkEvent *event, pony *data)
   }
   else
     g_print("Leave event on %s\n", getPonyName(data->name));
-
 }
 
 //Keeps the window matching the current frame of the gif file
@@ -68,7 +73,8 @@ void updateWinSize(pony *ponyWin)
 
   //Randomly moves the pony 1 pixel in a direction, to be changed later
   //Comment out this line to disable the "jitteryness" there is currently
-  updateWinPos(ponyWin);
+  if (!ponyWin->dragActive) // dont move the pony while it's being draged
+    updateWinPos(ponyWin);
 }
 
 //Just a quick hacked up function to test random movement
@@ -184,6 +190,7 @@ int main (int argc, char *argv[])
     ponyArray[i].speed = Stopped;
     ponyArray[i].animation = Idle;
     ponyArray[i].active = 1;
+    ponyArray[i].dragActive = 0;
     //Create animation from file
     ponyArray[i].pictureanim = gdk_pixbuf_animation_new_from_file("../trotcycle_AJ_left.gif", &error);
     ponyArray[i].image = gtk_image_new_from_animation(ponyArray[i].pictureanim);
@@ -197,9 +204,10 @@ int main (int argc, char *argv[])
     gtk_window_set_decorated(GTK_WINDOW(ponyArray[i].win), FALSE);
     //Set up the signals
     ponyArray[i].clickEventID = g_signal_connect(G_OBJECT(ponyArray[i].win), "button_press_event", G_CALLBACK(click_event), &ponyArray[i]);
+    ponyArray[i].releaseEventID = g_signal_connect(G_OBJECT(ponyArray[i].win), "button-release-event", G_CALLBACK(click_event), &ponyArray[i]);
     ponyArray[i].enterEventID = g_signal_connect(G_OBJECT(ponyArray[i].win), "enter-notify-event", G_CALLBACK(enter_event), &ponyArray[i]);
     ponyArray[i].leaveEventID = g_signal_connect(G_OBJECT(ponyArray[i].win), "leave-notify-event", G_CALLBACK(enter_event), &ponyArray[i]);
-    gtk_widget_add_events(ponyArray[i].win, GDK_BUTTON_PRESS_MASK);
+    gtk_widget_add_events(ponyArray[i].win, GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK);    
     gtk_container_add(GTK_CONTAINER(ponyArray[i].win), GTK_WIDGET(ponyArray[i].image));
     //Get rid of taskbar item
     gtk_window_set_skip_taskbar_hint(GTK_WINDOW(ponyArray[i].win), TRUE);
