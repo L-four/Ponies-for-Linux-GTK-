@@ -7,8 +7,7 @@ Ponies for Linux/GTK+!
 This is just a small demo to show the work I've done so far, and hopefully get some feedback from other pony programmers. This is my first time working with the GTK+ library, so any feedback would be appreciated!
 
 Contact Info: killerrabbit008@gmail.com
-
-Or on the ponychan forums
+Or on the ponychan forums: http://www.ponychan.net/chan/collab/res/5377.html
 
 Versions:
 0.1a(5-26-2011): Download

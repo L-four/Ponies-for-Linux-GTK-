@@ -1,5 +1,5 @@
 CC=gcc
-SOURCES=main.c
+SOURCES=main.c ponies.c
 EXECUTABLE=ponies
 
 all:
